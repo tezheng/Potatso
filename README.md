@@ -15,14 +15,16 @@ Currently, Potatso is compatible with following proxies:
 
 Author: [icodesign](https://twitter.com/icodesign_me)
 
+
+## Up and Running
+- git submodule update --init
+- pod update
+- carthage update
+
+
 ## Guide
 
 See [Setup Guide](../../wiki/Setup-Guide) for details.
-
-
-## How To Contribute
-
-// TODO
 
 
 ## Support Us
