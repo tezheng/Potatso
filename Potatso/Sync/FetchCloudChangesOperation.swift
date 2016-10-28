@@ -194,6 +194,8 @@ class FetchCloudChangesOperation: Operation {
             // TODO: Determine correct handling
             // CK Docs: The previousServerChangeToken value is too old and the client must re-sync from scratch
             SyncManager.shared.sync(true)
+		default:
+			break
         }
     }
 }

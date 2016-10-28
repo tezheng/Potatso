@@ -137,10 +137,10 @@ public class Manager {
         }
         let toURL = Potatso.sharedUrl().URLByAppendingPathComponent("GeoLite2-Country.mmdb")
         if NSFileManager.defaultManager().fileExistsAtPath(fromURL.path!) {
-            if NSFileManager.defaultManager().fileExistsAtPath(toURL.path!) {
-                try NSFileManager.defaultManager().removeItemAtURL(toURL)
+            if NSFileManager.defaultManager().fileExistsAtPath(toURL!.path!) {
+                try NSFileManager.defaultManager().removeItemAtURL(toURL!)
             }
-            try NSFileManager.defaultManager().copyItemAtURL(fromURL, toURL: toURL)
+            try NSFileManager.defaultManager().copyItemAtURL(fromURL, toURL: toURL!)
         }
     }
 
@@ -150,17 +150,17 @@ public class Manager {
         }
         let fm = NSFileManager.defaultManager()
         let toDirectoryURL = Potatso.sharedUrl().URLByAppendingPathComponent("httptemplate")
-        if !fm.fileExistsAtPath(toDirectoryURL.path!) {
-            try fm.createDirectoryAtURL(toDirectoryURL, withIntermediateDirectories: true, attributes: nil)
+        if !fm.fileExistsAtPath(toDirectoryURL!.path!) {
+            try fm.createDirectoryAtURL(toDirectoryURL!, withIntermediateDirectories: true, attributes: nil)
         }
         for file in try fm.contentsOfDirectoryAtPath(bundleURL.path!) {
-            let destURL = toDirectoryURL.URLByAppendingPathComponent(file)
+            let destURL = toDirectoryURL!.URLByAppendingPathComponent(file)
             let dataURL = bundleURL.URLByAppendingPathComponent(file)
-            if NSFileManager.defaultManager().fileExistsAtPath(dataURL.path!) {
-                if NSFileManager.defaultManager().fileExistsAtPath(destURL.path!) {
-                    try NSFileManager.defaultManager().removeItemAtURL(destURL)
+            if NSFileManager.defaultManager().fileExistsAtPath(dataURL!.path!) {
+                if NSFileManager.defaultManager().fileExistsAtPath(destURL!.path!) {
+                    try NSFileManager.defaultManager().removeItemAtURL(destURL!)
                 }
-                try fm.copyItemAtURL(dataURL, toURL: destURL)
+                try fm.copyItemAtURL(dataURL!, toURL: destURL!)
             }
         }
     }
@@ -290,12 +290,12 @@ extension Manager {
     func generateHttpProxyConfig() throws {
         let rootUrl = Potatso.sharedUrl()
         let confDirUrl = rootUrl.URLByAppendingPathComponent("httpconf")
-        let templateDirPath = rootUrl.URLByAppendingPathComponent("httptemplate").path!
-        let temporaryDirPath = rootUrl.URLByAppendingPathComponent("httptemporary").path!
-        let logDir = rootUrl.URLByAppendingPathComponent("log").path!
-        let maxminddbPath = Potatso.sharedUrl().URLByAppendingPathComponent("GeoLite2-Country.mmdb").path!
-        let userActionUrl = confDirUrl.URLByAppendingPathComponent("potatso.action")
-        for p in [confDirUrl.path!, templateDirPath, temporaryDirPath, logDir] {
+        let templateDirPath = rootUrl.URLByAppendingPathComponent("httptemplate")!.path!
+        let temporaryDirPath = rootUrl.URLByAppendingPathComponent("httptemporary")!.path!
+        let logDir = rootUrl.URLByAppendingPathComponent("log")!.path!
+        let maxminddbPath = Potatso.sharedUrl().URLByAppendingPathComponent("GeoLite2-Country.mmdb")!.path!
+        let userActionUrl = confDirUrl!.URLByAppendingPathComponent("potatso.action")
+        for p in [confDirUrl!.path!, templateDirPath, temporaryDirPath, logDir] {
             if !NSFileManager.defaultManager().fileExistsAtPath(p) {
                 _ = try? NSFileManager.defaultManager().createDirectoryAtPath(p, withIntermediateDirectories: true, attributes: nil)
             }
@@ -304,15 +304,15 @@ extension Manager {
         if let path = NSBundle.mainBundle().pathForResource("proxy", ofType: "plist"), defaultConf = NSDictionary(contentsOfFile: path) as? [String: AnyObject] {
             mainConf = defaultConf
         }
-        mainConf["confdir"] = confDirUrl.path!
+        mainConf["confdir"] = confDirUrl!.path!
         mainConf["templdir"] = templateDirPath
         mainConf["logdir"] = logDir
         mainConf["mmdbpath"] = maxminddbPath
         mainConf["global-mode"] = defaultToProxy
 //        mainConf["debug"] = 1024+65536+1
-//        mainConf["debug"] = 131071
-        mainConf["debug"] = mainConf["debug"] as! Int + 4096
-        mainConf["actionsfile"] = userActionUrl.path!
+        mainConf["debug"] = 131071
+//        mainConf["debug"] = mainConf["debug"] as! Int + 4096
+        mainConf["actionsfile"] = userActionUrl!.path!
 
         let mainContent = mainConf.map { "\($0) \($1)"}.joinWithSeparator("\n")
         try mainContent.writeToURL(Potatso.sharedHttpProxyConfUrl(), atomically: true, encoding: NSUTF8StringEncoding)
@@ -354,7 +354,7 @@ extension Manager {
         actionContent.appendContentsOf(Pollution.dnsList.map({ "DNS-IP-CIDR, \($0)/32, PROXY" }))
 
         let userActionString = actionContent.joinWithSeparator("\n")
-        try userActionString.writeToFile(userActionUrl.path!, atomically: true, encoding: NSUTF8StringEncoding)
+        try userActionString.writeToFile(userActionUrl!.path!, atomically: true, encoding: NSUTF8StringEncoding)
     }
 
 }

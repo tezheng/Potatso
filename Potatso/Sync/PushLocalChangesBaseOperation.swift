@@ -117,6 +117,8 @@ class PushLocalChangesBaseOperation: Operation {
         case .ChangeTokenExpired:
             // TODO: Determine correct handling
             completionHandler(error)
+		default:
+			break
         }
     }
 

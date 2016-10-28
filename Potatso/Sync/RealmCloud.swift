@@ -201,6 +201,7 @@ extension CKErrorCode: CustomStringConvertible {
         case ZoneNotFound: return "ZoneNotFound"
         case LimitExceeded: return "LimitExceeded"
         case UserDeletedZone: return "UserDeletedZone"
+		default: return "Unknown"
         }
     }
 }
